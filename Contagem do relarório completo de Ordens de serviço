@@ -1,0 +1,71 @@
+Sub ContagemStatus()
+
+Sheets("Tabelas")Activate
+
+Dim InicioSemana1 As Date
+Dim FimSemana1 As Date
+Dim InicioSemana2 As Date
+Dim FimSemana2 As Date
+Dim InicioSemana3 As Date
+Dim FimSemana3 As Date
+Dim InicioSemana4 As Date
+Dim FimSemana4 As Date
+Dim ColnDataProg As Variant
+Dim ColunStatus As Variant
+Dim fechadas As Variant
+
+InicioSemana1 = Range("C15").Value
+InicioSemana2 = Range("C16").Value
+InicioSemana3 = Range("C17").Value
+InicioSemana4 = Range("C18").Value
+FimSemana1 = Range("D15").Value
+FimSemana2 = Range("D16").Value
+FimSemana3 = Range("D17").Value
+FimSemana4 = Range("D18").Value
+
+
+Sheets("BancoDeDados").Activate
+
+Dim i As Long
+
+ColnDataProg = Range("C2:C500").Value
+
+For i = LBound(ColnDataProg) To UBound(ColnDataProg)
+    ColnDataProg(i, 1) = CDate(ColnDataProg(i, 1))
+Next i
+
+
+ColunStatus = Range("D2:D500").Value
+
+For i = LBound(ColunStatus) To UBound(ColunStatus)
+    ColunStatus(i, 1) = CStr(ColunStatus(i, 1))
+Next i
+Sheets("Tabelas").Activate
+
+
+If IsDate(InicioSemana1) And IsDate(FimSemana1) Then
+    'Se as variáveis são do tipo data, continue com a função
+Else
+    'Se as variáveis não são do tipo data, exiba uma mensagem de erro
+    MsgBox "As variáveis InicioSemana1 e/ou FimSemana1 não são do tipo data.", vbCritical, "Erro"
+    Exit Sub
+End If
+
+Sheets("Tabelas").Activate
+
+fechadas = 0
+'Calcula o numero de O.S. FECHADAS
+
+For i = 1 To Sheets("BancoDeDados").Cells(2, "C").End(xlDown).Row
+    If ColunStatus(i, 1) = "F" And ColnDataProg(i, 1) >= InicioSemana1 And ColnDataProg(i, 1) <= FimSemana1 Then
+        fechadas = fechadas + 1
+    End If
+Next i
+
+
+
+Sheets("Tabelas").Activate
+Range("D4").Value = fechadas
+
+End Sub
+
